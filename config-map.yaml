@@ -19,8 +19,8 @@ data:
           summary: High Memory Usage
   prometheus.yml: |-
     global:
-      scrape_interval: 5s
-      evaluation_interval: 5s
+      scrape_interval: 15s #抓取间隔时间，默认一分钟
+      evaluation_interval: 5s # 评估规则间隔时间，默认一分钟
     rule_files:
       - /etc/prometheus/prometheus.rules
     alerting:
@@ -38,7 +38,12 @@ data:
         - source_labels: [__meta_kubernetes_endpoints_name]
           regex: 'node-exporter'
           action: keep
-      
+
+      - job_name: "prometheus"
+        static_configs:
+          - targets: ["localhost:9090"]
+
+ 
       - job_name: 'kubernetes-apiservers'
 
         kubernetes_sd_configs:
@@ -105,6 +110,13 @@ data:
       - job_name: 'kube-state-metrics'
         static_configs:
           - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
+
+      - job_name: 'kube-metrics'
+        scheme: https
+        tls_config:
+          insecure_skip_verify: true
+        static_configs:
+          - targets: ['metrics-server.kube-system.svc.cluster.local:443']
 
       - job_name: 'kubernetes-cadvisor'
 

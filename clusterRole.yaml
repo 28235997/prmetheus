@@ -8,6 +8,7 @@ rules:
   - nodes
   - nodes/proxy
   - services
+  - deployments
   - endpoints
   - pods
   verbs: ["get", "list", "watch"]
